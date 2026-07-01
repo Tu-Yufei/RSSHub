@@ -1,9 +1,11 @@
-import { Route } from '@/types';
+import { load } from 'cheerio';
+
+import type { Route } from '@/types';
 import cache from '@/utils/cache';
 import got from '@/utils/got';
-import { load } from 'cheerio';
 import { parseDate } from '@/utils/parse-date';
 import timezone from '@/utils/timezone';
+
 import { baseUrl, categoryMap } from './data';
 
 export const route: Route = {
@@ -30,8 +32,8 @@ export const route: Route = {
     handler,
     url: 'hkepc.com/',
     description: `| 专题报导   | 新闻中心 | 新品快递 | 超频领域 | 流动数码 | 生活娱乐      | 会员消息 | 脑场新闻 | 业界资讯 | 最新消息 |
-  | ---------- | -------- | -------- | -------- | -------- | ------------- | -------- | -------- | -------- | -------- |
-  | coverStory | news     | review   | ocLab    | digital  | entertainment | member   | price    | press    | latest   |`,
+| ---------- | -------- | -------- | -------- | -------- | ------------- | -------- | -------- | -------- | -------- |
+| coverStory | news     | review   | ocLab    | digital  | entertainment | member   | price    | press    | latest   |`,
 };
 
 async function handler(ctx) {
@@ -94,7 +96,7 @@ async function handler(ctx) {
                 // Taken from /caixin/blog.js
                 content
                     .find('#view > p')
-                    .filter((_, e) => e.children[0]?.data === String.fromCharCode(160))
+                    .filter((_, e) => e.children[0]?.data === String.fromCodePoint(160))
                     .remove();
 
                 // fix lazyload image
@@ -109,8 +111,8 @@ async function handler(ctx) {
                     .toArray()
                     .map((e) => $(e).text().trim());
                 item.description = content.html();
-                item.pubDate = timezone(parseDate($('.publishDate').text()), +8);
-                item.guid = item.link.substring(0, item.link.lastIndexOf('/'));
+                item.pubDate = timezone(parseDate($('.publishDate').text()), 8);
+                item.guid = item.link.slice(0, item.link.lastIndexOf('/'));
 
                 return item;
             })

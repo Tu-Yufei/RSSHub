@@ -1,8 +1,9 @@
-import { Route } from '@/types';
+import queryString from 'query-string';
+
+import type { Route } from '@/types';
 import got from '@/utils/got';
 import { parseDate } from '@/utils/parse-date';
 import timezone from '@/utils/timezone';
-import queryString from 'query-string';
 
 export const route: Route = {
     path: '/jw/:type',
@@ -26,8 +27,8 @@ export const route: Route = {
     maintainers: ['cqjjjzr'],
     handler,
     description: `| 公告通知 | 教学动态 |
-  | -------- | -------- |
-  | ggtz     | jxdt     |`,
+| -------- | -------- |
+| ggtz     | jxdt     |`,
 };
 
 async function handler(ctx) {
@@ -76,7 +77,7 @@ async function handler(ctx) {
                 const ret = {
                     title: item.title,
                     author: item.publisher,
-                    pubDate: timezone(parseDate(item.publishTime, 'YYYY-MM-DD HH:mm:ss'), +8),
+                    pubDate: timezone(parseDate(item.publishTime, 'YYYY-MM-DD HH:mm:ss'), 8),
                     link: item.url,
                 };
                 if (type === 'ggtz') {

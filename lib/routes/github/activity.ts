@@ -1,7 +1,10 @@
-import { Route, ViewType } from '@/types';
+import Parser from 'rss-parser';
+import sanitizeHtml from 'sanitize-html';
+
+import type { Route } from '@/types';
+import { ViewType } from '@/types';
 import ofetch from '@/utils/ofetch';
 import { parseDate } from '@/utils/parse-date';
-import Parser from 'rss-parser';
 
 const parser = new Parser();
 
@@ -10,8 +13,8 @@ export const route: Route = {
     name: 'User Activities',
     maintainers: ['hyoban'],
     example: '/github/activity/DIYgod',
-    categories: ['programming', 'popular'],
-    view: ViewType.Articles,
+    categories: ['programming'],
+    view: ViewType.Notifications,
     parameters: {
         user: 'GitHub username',
     },
@@ -44,12 +47,13 @@ export const route: Route = {
             item: feed.items.map((item) => ({
                 title: item.title ?? '',
                 link: item.link,
-                description: item.content?.replace(/href="(.+?)"/g, `href="https://github.com$1"`),
+                description: sanitizeHtml(item.content?.replaceAll(/href="\/(.+?)"/g, 'href="https://github.com/$1"') ?? '', { allowedTags: [...sanitizeHtml.defaults.allowedTags, 'img'] }),
                 pubDate: item.pubDate ? parseDate(item.pubDate) : undefined,
                 author: item.author,
                 guid: item.id,
                 image,
             })),
+            allowEmpty: true,
         };
     },
 };

@@ -1,9 +1,10 @@
-import { Route } from '@/types';
+import { load } from 'cheerio';
+
+import type { Route } from '@/types';
 import cache from '@/utils/cache';
 import got from '@/utils/got';
-import { load } from 'cheerio';
-import timezone from '@/utils/timezone';
 import { parseDate } from '@/utils/parse-date';
+import timezone from '@/utils/timezone';
 
 export const route: Route = {
     path: '/news',
@@ -42,7 +43,8 @@ async function handler() {
 
     const list = $('#wp_news_w9')
         .find('li')
-        .map((_, item) => {
+        .toArray()
+        .map((item) => {
             item = $(item);
             const date = item.find('.column-news-date').text();
 
@@ -52,10 +54,9 @@ async function handler() {
             return {
                 title: item.find('a').attr('title'),
                 link,
-                pubDate: timezone(parseDate(date), +8),
+                pubDate: timezone(parseDate(date), 8),
             };
-        })
-        .get();
+        });
 
     const items = await Promise.all(
         list.map((item) =>

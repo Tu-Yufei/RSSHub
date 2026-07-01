@@ -1,7 +1,8 @@
-import { Route } from '@/types';
+import { load } from 'cheerio';
+
+import type { Route } from '@/types';
 import cache from '@/utils/cache';
 import got from '@/utils/got';
-import { load } from 'cheerio';
 import { parseDate } from '@/utils/parse-date';
 import timezone from '@/utils/timezone';
 
@@ -40,17 +41,17 @@ async function handler(ctx) {
     const feed_title = $('span.windowstyle67278', "div[class='list_right fr']").text().trim();
 
     const list = $("div[class='list_right fr'] ul li")
-        .map((_, item) => {
+        .toArray()
+        .map((item) => {
             item = $(item);
             const a = item.find('a');
             const date = parseDate(item.find('span').text());
             return {
                 title: a.text(),
                 link: new URL(a.attr('href'), baseUrl).href,
-                pubDate: timezone(date, +8),
+                pubDate: timezone(date, 8),
             };
-        })
-        .get();
+        });
 
     return {
         title: `西安交通大学电气学院 - ${feed_title}`,

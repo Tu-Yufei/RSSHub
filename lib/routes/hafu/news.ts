@@ -1,5 +1,6 @@
-import { Route } from '@/types';
-import parseList from './utils';
+import type { Route } from '@/types';
+
+import { parseList } from './utils';
 
 export const route: Route = {
     path: '/news/:type?',
@@ -18,8 +19,8 @@ export const route: Route = {
     maintainers: [],
     handler,
     description: `| 校内公告通知 | 教务处公告通知 | 招生就业处公告通知 |
-  | ------------ | -------------- | ------------------ |
-  | ggtz         | jwc            | zsjyc              |`,
+| ------------ | -------------- | ------------------ |
+| ggtz         | jwc            | zsjyc              |`,
 };
 
 async function handler(ctx) {

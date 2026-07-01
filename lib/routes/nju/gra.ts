@@ -1,6 +1,7 @@
-import { Route } from '@/types';
-import got from '@/utils/got';
 import { load } from 'cheerio';
+
+import type { Route } from '@/types';
+import got from '@/utils/got';
 import { parseDate } from '@/utils/parse-date';
 import timezone from '@/utils/timezone';
 
@@ -43,7 +44,8 @@ async function handler() {
         title: '研究生院-动态通知',
         link: 'https://grawww.nju.edu.cn/905/list.htm',
         item: list
-            .map((index, item) => {
+            .toArray()
+            .map((item) => {
                 item = $(item);
 
                 const year = item.find('.news_days').first().text();
@@ -55,10 +57,9 @@ async function handler() {
                 return {
                     title: item.find('a').attr('title'),
                     link: 'https://grawww.nju.edu.cn' + item.find('a').attr('href'),
-                    pubDate: timezone(parseDate(year + day, 'YYYYMM-DD'), +8),
+                    pubDate: timezone(parseDate(year + day, 'YYYYMM-DD'), 8),
                 };
             })
-            .get()
             .filter(Boolean),
     };
 }

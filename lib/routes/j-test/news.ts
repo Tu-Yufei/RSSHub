@@ -1,7 +1,8 @@
-import { Route } from '@/types';
+import { load } from 'cheerio';
+
+import type { Route } from '@/types';
 import cache from '@/utils/cache';
 import ofetch from '@/utils/ofetch';
-import { load } from 'cheerio';
 import { parseDate } from '@/utils/parse-date';
 import timezone from '@/utils/timezone';
 
@@ -36,7 +37,7 @@ async function handler() {
         .map((item) => {
             const [title, date] = $(item).text().trim().replaceAll(']', '').split(' [');
             const link = new URL($(item).children('a').attr('href')!, baseUrl).href;
-            const pubDate = timezone(parseDate(date), +8);
+            const pubDate = timezone(parseDate(date), 8);
             return {
                 title,
                 link,

@@ -1,7 +1,8 @@
-import { Route } from '@/types';
+import { load } from 'cheerio';
+
+import type { Route } from '@/types';
 import cache from '@/utils/cache';
 import got from '@/utils/got';
-import { load } from 'cheerio';
 import { parseDate } from '@/utils/parse-date';
 
 const ROW_COUNT = 100;
@@ -30,10 +31,12 @@ const getMappings = function (obj) {
     const mapping = new Map();
     const reverseMapping = new Map();
     for (const key in obj) {
-        if ('name' in obj[key] && 'id' in obj[key]) {
-            reverseMapping.set(obj[key].name, obj[key].id);
-            mapping.set(obj[key].id, obj[key].name);
+        if (!('name' in obj[key] && 'id' in obj[key])) {
+            continue;
         }
+
+        reverseMapping.set(obj[key].name, obj[key].id);
+        mapping.set(obj[key].id, obj[key].name);
     }
     return [mapping, reverseMapping];
 };

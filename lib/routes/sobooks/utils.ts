@@ -1,9 +1,10 @@
+import { load } from 'cheerio';
+
 import cache from '@/utils/cache';
 import got from '@/utils/got';
-import { load } from 'cheerio';
 import { parseDate } from '@/utils/parse-date';
 
-const utils = async (ctx, currentUrl) => {
+export const utils = async (ctx, currentUrl) => {
     const rootUrl = 'https://www.sobooks.net';
     currentUrl = `${rootUrl}/${currentUrl}`;
     const response = await got({
@@ -15,14 +16,14 @@ const utils = async (ctx, currentUrl) => {
 
     const list = $('.card-item h3 a')
         .slice(0, 15)
-        .map((_, item) => {
+        .toArray()
+        .map((item) => {
             item = $(item);
             return {
                 title: item.text(),
                 link: item.attr('href'),
             };
-        })
-        .get();
+        });
 
     const items = await Promise.all(
         list.map((item) =>
@@ -49,4 +50,3 @@ const utils = async (ctx, currentUrl) => {
         item: items,
     };
 };
-export default utils;

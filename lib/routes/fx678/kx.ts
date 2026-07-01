@@ -1,6 +1,8 @@
-import { Route } from '@/types';
-import cache from '@/utils/cache';
 import { load } from 'cheerio';
+
+import type { Route } from '@/types';
+import { ViewType } from '@/types';
+import cache from '@/utils/cache';
 import got from '@/utils/got';
 import { parseDate } from '@/utils/parse-date';
 import timezone from '@/utils/timezone';
@@ -8,6 +10,7 @@ import timezone from '@/utils/timezone';
 export const route: Route = {
     path: '/kx',
     categories: ['finance'],
+    view: ViewType.Notifications,
     example: '/fx678/kx',
     parameters: {},
     features: {
@@ -36,9 +39,9 @@ async function handler() {
     // 页面新闻消息列表
     const list = $('.body_zb ul .body_zb_li .zb_word')
         .find('.list_font_pic > a:first-child')
-        .map((i, e) => $(e).attr('href'))
+        .toArray()
         .slice(0, 30)
-        .get();
+        .map((e) => $(e).attr('href'));
 
     const out = await Promise.all(
         list.map((itemUrl) =>
@@ -49,7 +52,7 @@ async function handler() {
                 const contentPart = $('.article-main .content').html().trim();
                 const forewordPart = $('.article-main .foreword').html().trim();
                 const datetimeString = $('.article-cont .details i').text().trim();
-                const articlePubDate = timezone(parseDate(datetimeString, 'YYYY-MM-DD HH:mm:ss'), +8);
+                const articlePubDate = timezone(parseDate(datetimeString, 'YYYY-MM-DD HH:mm:ss'), 8);
 
                 const item = {
                     title: $('.article-main .foreword').text().trim().split('——').pop(),

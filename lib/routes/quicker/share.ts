@@ -1,9 +1,10 @@
-import { Route } from '@/types';
+import { load } from 'cheerio';
+
+import type { Route } from '@/types';
 import cache from '@/utils/cache';
 import got from '@/utils/got';
-import { load } from 'cheerio';
-import timezone from '@/utils/timezone';
 import { parseDate, parseRelativeDate } from '@/utils/parse-date';
+import timezone from '@/utils/timezone';
 
 export const route: Route = {
     path: '/share/:category?',
@@ -27,12 +28,12 @@ export const route: Route = {
     maintainers: ['nczitzk'],
     handler,
     description: `| 动作库最新更新 | 动作库最多赞 | 动作库新动作 | 动作库最近赞 |
-  | -------------- | ------------ | ------------ | ------------ |
-  | Recent         | Recommended  | NewActions   | RecentLiked  |
+| -------------- | ------------ | ------------ | ------------ |
+| Recent         | Recommended  | NewActions   | RecentLiked  |
 
-  | 子程序      | 扩展热键  | 文本指令     |
-  | ----------- | --------- | ------------ |
-  | SubPrograms | PowerKeys | TextCommands |`,
+| 子程序      | 扩展热键  | 文本指令     |
+| ----------- | --------- | ------------ |
+| SubPrograms | PowerKeys | TextCommands |`,
 };
 
 async function handler(ctx) {
@@ -77,7 +78,7 @@ async function handler(ctx) {
 
                 item.author = content('.user-link').first().text();
                 item.description = content('div[data-info="动作信息"]').html() ?? content('#app').html() ?? content('.row').eq(1).html();
-                item.pubDate = timezone(/-/.test(pubDate) ? parseDate(pubDate) : parseRelativeDate(pubDate), +8);
+                item.pubDate = timezone(/-/.test(pubDate) ? parseDate(pubDate) : parseRelativeDate(pubDate), 8);
 
                 return item;
             })

@@ -1,9 +1,11 @@
-import { Route } from '@/types';
+import { load } from 'cheerio';
+
+import type { Route } from '@/types';
 import cache from '@/utils/cache';
 import got from '@/utils/got';
-import { load } from 'cheerio';
 import { parseDate } from '@/utils/parse-date';
 import timezone from '@/utils/timezone';
+
 const baseUrl = 'https://www.peopo.org';
 
 export const route: Route = {
@@ -29,24 +31,24 @@ export const route: Route = {
     maintainers: [],
     handler,
     description: `| 分類     | ID  |
-  | -------- | --- |
-  | 社會關懷 | 159 |
-  | 生態環保 | 113 |
-  | 文化古蹟 | 143 |
-  | 社區改造 | 160 |
-  | 教育學習 | 161 |
-  | 農業     | 163 |
-  | 生活休閒 | 162 |
-  | 媒體觀察 | 164 |
-  | 運動科技 | 165 |
-  | 政治經濟 | 166 |
-  | 北台灣   | 223 |
-  | 中台灣   | 224 |
-  | 南台灣   | 225 |
-  | 東台灣   | 226 |
-  | 校園中心 | 167 |
-  | 原住民族 | 227 |
-  | 天然災害 | 168 |`,
+| -------- | --- |
+| 社會關懷 | 159 |
+| 生態環保 | 113 |
+| 文化古蹟 | 143 |
+| 社區改造 | 160 |
+| 教育學習 | 161 |
+| 農業     | 163 |
+| 生活休閒 | 162 |
+| 媒體觀察 | 164 |
+| 運動科技 | 165 |
+| 政治經濟 | 166 |
+| 北台灣   | 223 |
+| 中台灣   | 224 |
+| 南台灣   | 225 |
+| 東台灣   | 226 |
+| 校園中心 | 167 |
+| 原住民族 | 227 |
+| 天然災害 | 168 |`,
 };
 
 async function handler(ctx) {
@@ -74,7 +76,7 @@ async function handler(ctx) {
                 item.category = $('#node-terms .inline li')
                     .toArray()
                     .map((item) => $(item).find('a').text());
-                item.pubDate = timezone(parseDate($('.submitted span').text()), +8);
+                item.pubDate = timezone(parseDate($('.submitted span').text()), 8);
                 item.description = ($('.field-name-field-video-id .field-items').text() ? $('.field-name-field-video-id input').attr('value') : '') + $('.post_text_s .field-items').html();
 
                 return item;

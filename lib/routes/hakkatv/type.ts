@@ -1,4 +1,4 @@
-import { Route } from '@/types';
+import type { Route } from '@/types';
 import cache from '@/utils/cache';
 import got from '@/utils/got';
 import { parseDate } from '@/utils/parse-date';
@@ -32,8 +32,8 @@ export const route: Route = {
     handler,
     url: 'hakkatv.org.tw/news',
     description: `| 客家焦點 | 政經要聞  | 民生醫療 | 地方風采 | 國際萬象      |
-  | -------- | --------- | -------- | -------- | ------------- |
-  | hakka    | political | medical  | local    | international |`,
+| -------- | --------- | -------- | -------- | ------------- |
+| hakka    | political | medical  | local    | international |`,
 };
 
 async function handler(ctx) {
@@ -66,7 +66,7 @@ async function handler(ctx) {
 
     const list = allData.flat().map((item) => ({
         title: item.title,
-        pubDate: timezone(parseDate(item.created_at), +8),
+        pubDate: timezone(parseDate(item.created_at), 8),
         author: item.author,
         link: `${baseUrl}/news-detail/${item.id}`,
         id: item.id,
